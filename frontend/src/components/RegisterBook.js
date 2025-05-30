@@ -10,6 +10,8 @@ function BookForm() {
   const [loading, setLoading] = useState(false);
 
   const generateCover = async () => {
+    console.log("🔑 OpenAI API KEY:", process.env.REACT_APP_OPENAI_API_KEY);
+
   setLoading(true);
   try {
     const gptResponse = await axios.post(
