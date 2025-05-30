@@ -54,6 +54,7 @@ public class BookService {
         book.setUpdatedAt(LocalDateTime.now());
         book.setBookCategory(dto.getBookCategory());
         book.setBookTag(dto.getBookTag());
+        book.setCoverUrl(dto.getCoverUrl());
 
         Book updatedBook = bookRepository.save(book);
         return new BookResponseDto(updatedBook);
