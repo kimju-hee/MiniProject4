@@ -104,9 +104,9 @@ const Book_Page = () => {
     <div style={{ 
       display: 'flex', 
       padding: '2rem', 
-      gap: '3rem',
+      gap: '1.5rem',
       minHeight: '100vh',
-      backgroundColor: '#f8f9fa'
+      backgroundColor: '#f8f9fa',
     }}>
       {/* 왼쪽: 북커버 및 메타 정보 */}
       <div style={{ 
@@ -133,7 +133,7 @@ const Book_Page = () => {
             />
           ) : (
             <div style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'linear-gradient(135deg,rgb(199, 101, 255) 0%, #764ba2 100%)',
               color: 'white',
               width: '250px', 
               height: '350px',
@@ -156,21 +156,20 @@ const Book_Page = () => {
             fontSize: '24px',
             lineHeight: '1.3'
           }}>
-            {book.title}
+            제목:{book.title}
           </h1>
           
           {book.bookCategory && (
             <div style={{ 
               display: 'inline-block',
-              backgroundColor: '#e3f2fd',
-              color: '#1976d2',
+              color: '#rgb(46, 89, 233)',
               padding: '0.5rem 1rem',
               borderRadius: '20px',
-              fontSize: '14px',
+              fontSize: '15px',
               fontWeight: 'bold',
               marginBottom: '1rem'
             }}>
-              📂 {book.bookCategory}
+               카테고리:{book.bookCategory}
             </div>
           )}
           
@@ -180,7 +179,7 @@ const Book_Page = () => {
               fontSize: '14px',
               marginBottom: '1rem'
             }}>
-              🏷️ {book.bookTag}
+              태그:{book.bookTag}
             </div>
           )}
 
@@ -190,7 +189,7 @@ const Book_Page = () => {
               fontSize: '12px',
               marginBottom: '2rem'
             }}>
-              📅 {new Date(book.createdAt).toLocaleDateString('ko-KR', {
+               등록:{new Date(book.createdAt).toLocaleDateString('ko-KR', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
@@ -208,7 +207,7 @@ const Book_Page = () => {
               onClick={handleEdit} 
               style={{
                 ...buttonStyle,
-                backgroundColor: '#28a745'
+                background: 'linear-gradient(135deg,rgb(60, 184, 29) 0%,rgb(12, 133, 28) 100%)'
               }}
             >
               ✏️ 책 수정
@@ -218,8 +217,8 @@ const Book_Page = () => {
               onClick={handleRegenerateCover}
               style={{
                 ...buttonStyle,
-                backgroundColor: '#ffc107',
-                color: '#333'
+                background: 'linear-gradient(135deg,rgb(13, 71, 158) 0%,rgb(45, 150, 177) 100%)',
+                
               }}
             >
               🎨 표지 재생성
@@ -230,7 +229,7 @@ const Book_Page = () => {
               disabled={deleting}
               style={{
                 ...buttonStyle,
-                backgroundColor: deleting ? '#ccc' : '#dc3545'
+                background: 'linear-gradient(135deg,rgb(255, 5, 5) 0%,rgb(207, 57, 57) 100%)',
               }}
             >
               {deleting ? '삭제 중...' : '🗑️ 책 삭제'}
@@ -240,7 +239,8 @@ const Book_Page = () => {
               onClick={() => navigate('/')}
               style={{
                 ...buttonStyle,
-                backgroundColor: '#6c757d'
+                background: 'linear-gradient(135deg,rgb(58, 56, 56) 0%,rgb(77, 69, 69) 100%)',
+
               }}
             >
               🏠 목록으로
@@ -257,7 +257,8 @@ const Book_Page = () => {
         backgroundColor: 'white',
         borderRadius: '12px',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        maxHeight: '890px',
       }}>
         {/* 헤더 */}
         <div style={{
@@ -279,7 +280,10 @@ const Book_Page = () => {
           padding: '2rem',
           overflowY: 'auto',
           lineHeight: '1.8',
-          fontSize: '16px'
+          fontSize: '16px',
+          maxHeight: 'calc(110vh - 150px)'
+        
+
         }}>
           {book.content ? (
             <p style={{ 
