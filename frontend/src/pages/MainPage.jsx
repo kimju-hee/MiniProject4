@@ -11,10 +11,39 @@ const MainPage = () => {
     <div style={{ padding: '2rem' }}>
       {/* 상단 버튼/검색 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-        <button onClick={() => navigate('/books/register')}>📘 책 등록</button>
-        <div>
-          <input type="text" placeholder="검색어를 입력하세요" />
-          <button>검색</button>
+        <button onClick={() => navigate('/books/register')}
+                  style={{
+                  width: '80px',
+                  height: '30px',
+                  fontSize: '16px',
+                  backgroundColor: 'rgb(31, 203, 255)',
+                  color: 'rgb(0, 0, 0)',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',display: 'flex',
+                  alignItems: 'center',justifyContent: 'center',
+                  padding: '0.5rem 0.5rem'
+                  }}>책 등록</button>
+
+        <div style={{ display: 'flex', alignItems: 'center', 
+                      gap: '0.5rem',
+                      height: '50px'}}>
+          <input type="text" placeholder="검색어를 입력하세요" 
+          style={{ padding: '0.5rem', fontSize: '14px',height: '30px',gap : '0.5',display: 'flex',
+                    alignItems: 'center',justifyContent: 'center' }}/>
+
+          <button style={{
+            padding: '0.5rem 0.5rem',
+            fontSize: '16px',
+            width: '60px',
+            height: '30px',
+            backgroundColor: 'rgb(0, 119, 255)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            display: 'flex',
+            alignItems: 'center',justifyContent: 'center',
+            cursor: 'pointer'}}>검색</button>
         </div>
       </div>
 
@@ -38,8 +67,8 @@ const MainPage = () => {
               ) : (
                 <div
                   style={{
-                    width: '100%',
-                    height: '200px',
+                    width: '105px',
+                    height: '148px',
                     backgroundColor: 'black',
                     color: 'white',
                     display: 'flex',
