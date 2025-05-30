@@ -123,7 +123,7 @@ const Book_Edit = () => {
         borderRadius: '12px',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
       }}>
-        <h2 style={{ marginBottom: '2rem', color: '#333' }}>✏️ 책 정보 수정</h2>
+        <h2 style={{ marginBottom: '2rem', color: '#333' }}> 책 정보 수정</h2>
         
         <div style={{ marginBottom: '1.5rem' }}>
           <label style={{ 
@@ -266,7 +266,6 @@ const Book_Edit = () => {
         borderRadius: '12px',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
         textAlign: 'center',
-        height: 'fit-content'
       }}>
         <h3 style={{ marginBottom: '2rem', color: '#333' }}>🎨 북커버 미리보기</h3>
         
@@ -314,11 +313,11 @@ const Book_Edit = () => {
             disabled={generating || saving || !title.trim()}
             style={{
               ...buttonStyle,
-              backgroundColor: (generating || saving || !title.trim()) ? '#ccc' : '#ffc107',
-              color: (generating || saving || !title.trim()) ? '#666' : '#333'
+              backgroundColor: (generating || saving || !title.trim()) ? '#ccc' : '#28a745',
+              color: (generating || saving || !title.trim()) ? '#666' : '#ffffff'
             }}
           >
-            {generating ? '🎨 생성 중...' : '🎨 AI 북커버 생성'}
+            {generating ? '🎨 생성 중...' : '🎨 AI 북커버 다시 생성'}
           </button>
           
           {coverImage && (
@@ -336,12 +335,12 @@ const Book_Edit = () => {
         </div>
 
         <div style={{ 
-          marginTop: '2rem',
+          marginTop: '7rem',
           padding: '1rem',
-          backgroundColor: '#f8f9fa',
+          backgroundColor: '#fffd87',
           borderRadius: '6px',
-          fontSize: '12px',
-          color: '#666',
+          fontSize: '13px',
+          color: '#black',
           textAlign: 'left'
         }}>
           <strong>💡 팁:</strong><br/>

@@ -124,8 +124,8 @@ const Book_Page = () => {
               src={book.coverUrl} 
               alt="cover" 
               style={{ 
-                width: '250px', 
-                maxHeight: '350px', 
+                width: '270px', 
+                maxHeight: '386px', 
                 objectFit: 'cover',
                 borderRadius: '8px',
                 boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
@@ -135,8 +135,8 @@ const Book_Page = () => {
             <div style={{
               background: 'linear-gradient(135deg,rgb(199, 101, 255) 0%, #764ba2 100%)',
               color: 'white',
-              width: '250px', 
-              height: '350px',
+              width: '270px', 
+              height: '386px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -243,7 +243,7 @@ const Book_Page = () => {
 
               }}
             >
-              🏠 목록으로
+              ≡ 목록으로
             </button>
           </div>
         </div>
@@ -258,7 +258,7 @@ const Book_Page = () => {
         borderRadius: '12px',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
         overflow: 'hidden',
-        maxHeight: '890px',
+        maxHeight: '905px',
       }}>
         {/* 헤더 */}
         <div style={{

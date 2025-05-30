@@ -107,24 +107,23 @@ const MainPage = () => {
         <button 
           onClick={() => navigate('/register')}
           style={{
-            padding: '0.75rem 1.5rem',
-            fontSize: '15px',
-            width: '120px',
-            height: '30px',
-            backgroundColor: 'rgb(17, 159, 224)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0.5rem 0.5rem',
-            gap: '0.5rem',
-            transition: 'background-color 0.2s'
+              width: '200px',
+              height: '60px',
+              fontSize: '20px',
+              backgroundColor: '#ffffff',      
+              color: '#000000',                 
+              border: '1px solid #000000',     
+              borderRadius: '16px',             
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.2s ease',
           }}
-          onMouseOver={(e) => e.target.style.backgroundColor = 'rgb(13, 135, 190)'}
-          onMouseOut={(e) => e.target.style.backgroundColor = 'rgb(17, 159, 224)'}
+          onMouseOver={(e) => e.target.style.backgroundColor = 'rgb(240, 240, 240)'}
+          onMouseOut={(e) => e.target.style.backgroundColor = 'rgb(255, 255, 255)'}
         > ➕ 새 책 등록</button>
 
         <div style={{ 
@@ -140,11 +139,11 @@ const MainPage = () => {
             onKeyPress={handleKeyPress}
             style={{ 
               padding: '0.75rem', 
-              fontSize: '14px',
-              width: '250px',
-              height: '30px',
-              border: '1px solid #ddd',
-              borderRadius: '6px',
+              fontSize: '20px',
+              width: '350px',
+              height: '60px',
+              border: '1px solid #000000',
+              borderRadius: '12px',
               outline: 'none'
             }}
           />
@@ -152,22 +151,24 @@ const MainPage = () => {
             onClick={handleSearch}
             style={{
               padding: '0.75rem 1.5rem',
-              fontSize: '15px',
-              backgroundColor: 'rgb(17, 159, 224)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
+              fontSize: '20px',
+              backgroundColor: '#ffffff',        
+              color: '#000000',                  
+              border: '1px solid #000000',     
+              borderRadius: '16px',    
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',  
+              color: 'black',
               cursor: 'pointer',
               transition: 'background-color 0.2s',
-              width: '80px',
-              height: '30px',
+              width: '100px',
+              height: '60px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               padding: '0.5rem 0.5rem',
             }}
-            onMouseOver={(e) => e.target.style.backgroundColor = 'rgb(13, 135, 190)'}
-            onMouseOut={(e) => e.target.style.backgroundColor = 'rgb(17, 159, 224)'}
+            onMouseOver={(e) => e.target.style.backgroundColor = 'rgb(240, 240, 240)'}
+            onMouseOut={(e) => e.target.style.backgroundColor = 'rgb(255, 255, 255)'}
           >🔍 검색</button>
           {searchTerm && (
             <button 
@@ -217,7 +218,7 @@ const MainPage = () => {
           }}>
             {books.length === 0 ? (
               <>
-                📖 등록된 도서가 없습니다.<br/>
+                등록된 도서가 없습니다.<br/>
                 <small style={{ fontSize: '14px', marginTop: '1rem', display: 'block' }}>
                   "새 책 등록" 버튼을 클릭하여 첫 책을 등록해보세요!
                 </small>
@@ -383,9 +384,11 @@ const MainPage = () => {
             backgroundColor: 'white',
             color: 'black',
             border: 'none',
-            borderRadius: '6px',
+            borderRadius: '12px',
             cursor: 'pointer'
-          }}>🔄 새로고침</button>
+          }}onMouseOver={(e) => e.target.style.backgroundColor = 'rgb(240, 240, 240)'}
+            onMouseOut={(e) => e.target.style.backgroundColor = 'rgb(255, 255, 255)'}
+            >새로고침</button>
       </div>
     </div>
   );

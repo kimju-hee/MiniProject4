@@ -245,7 +245,7 @@ const BookRegister = () => {
                   ? '#ccc' : '#20c997',
                 flex: 1,
                 minWidth: '180px'
-              }}>{loading ? '🤖 AI 등록 중...' : '🤖 AI 표지와 함께 등록'}
+              }}>{loading ? '🎨 AI 등록 중...' : '🎨 AI 표지와 함께 등록'}
           </button>
           
           <button 
@@ -292,18 +292,17 @@ const BookRegister = () => {
               src={coverImage} 
               alt="AI generated book cover" 
               style={{ 
-                width: '220px', 
-                height: '300px',
+                width: '218px', 
+                height: '308px',
                 objectFit: 'cover',
                 borderRadius: '8px',
                 boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
-              }} 
-            />
+              }}/>
           ) : (
             <div
               style={{
-                width: '220px',
-                height: '300px',
+                width: '218px',
+                height: '308px',
                 backgroundColor: '#f8f9fa',
                 color: '#6c757d',
                 display: 'flex',
@@ -315,8 +314,8 @@ const BookRegister = () => {
                 fontSize: '16px',
                 flexDirection: 'column',
                 gap: '1rem'
-              }}
-            >
+              }}>
+
               {generating ? (
                 <>
                   <div style={{ fontSize: '2rem' }}>🎨</div>
@@ -347,7 +346,7 @@ const BookRegister = () => {
               ? '🎨 AI 생성 중...' 
               : coverImage 
                 ? '🔄 AI 북커버 재생성' 
-                : '🤖 AI 북커버 미리보기'}
+                : '🎨 AI 북커버 미리보기'}
           </button>
           
           {coverImage && (
