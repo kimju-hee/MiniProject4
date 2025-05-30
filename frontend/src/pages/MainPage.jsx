@@ -108,7 +108,9 @@ const MainPage = () => {
           onClick={() => navigate('/register')}
           style={{
             padding: '0.75rem 1.5rem',
-            fontSize: '16px',
+            fontSize: '15px',
+            width: '120px',
+            height: '30px',
             backgroundColor: 'rgb(17, 159, 224)',
             color: 'white',
             border: 'none',
@@ -116,14 +118,14 @@ const MainPage = () => {
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0.5rem 0.5rem',
             gap: '0.5rem',
             transition: 'background-color 0.2s'
           }}
           onMouseOver={(e) => e.target.style.backgroundColor = 'rgb(13, 135, 190)'}
           onMouseOut={(e) => e.target.style.backgroundColor = 'rgb(17, 159, 224)'}
-        >
-          ➕ 새 책 등록
-        </button>
+        > ➕ 새 책 등록</button>
 
         <div style={{ 
           display: 'flex', 
@@ -140,6 +142,7 @@ const MainPage = () => {
               padding: '0.75rem', 
               fontSize: '14px',
               width: '250px',
+              height: '30px',
               border: '1px solid #ddd',
               borderRadius: '6px',
               outline: 'none'
@@ -149,19 +152,23 @@ const MainPage = () => {
             onClick={handleSearch}
             style={{
               padding: '0.75rem 1.5rem',
-              fontSize: '14px',
+              fontSize: '15px',
               backgroundColor: 'rgb(17, 159, 224)',
               color: 'white',
               border: 'none',
               borderRadius: '6px',
               cursor: 'pointer',
-              transition: 'background-color 0.2s'
+              transition: 'background-color 0.2s',
+              width: '80px',
+              height: '30px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '0.5rem 0.5rem',
             }}
             onMouseOver={(e) => e.target.style.backgroundColor = 'rgb(13, 135, 190)'}
             onMouseOut={(e) => e.target.style.backgroundColor = 'rgb(17, 159, 224)'}
-          >
-            🔍 검색
-          </button>
+          >🔍 검색</button>
           {searchTerm && (
             <button 
               onClick={() => {
@@ -175,11 +182,14 @@ const MainPage = () => {
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',
-                cursor: 'pointer'
-              }}
-            >
-              ❌
-            </button>
+                cursor: 'pointer',
+                width: '30px',
+                height: '30px',
+                display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '0.5rem 0.5rem',
+              }}>❌</button>
           )}
         </div>
       </div>
@@ -223,10 +233,10 @@ const MainPage = () => {
               style={{ 
                 cursor: 'pointer', 
                 textAlign: 'center',
-                backgroundColor: 'white',
+                backgroundColor: 'rgb(255, 255, 255)',
                 borderRadius: '12px',
                 padding: '1rem',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                 transition: 'transform 0.2s, box-shadow 0.2s',
                 position: 'relative'
               }}
@@ -245,8 +255,8 @@ const MainPage = () => {
                 onClick={(e) => handleDeleteBook(book.id, e)}
                 style={{
                   position: 'absolute',
-                  top: '0.5rem',
-                  right: '0.5rem',
+                  top: '0rem',
+                  right: '0.3rem',
                   background: 'rgba(220, 53, 69, 0.8)',
                   color: 'white',
                   border: 'none',
@@ -270,8 +280,8 @@ const MainPage = () => {
                   src={book.coverUrl}
                   alt="book cover"
                   style={{ 
-                    width: '140px', 
-                    height: '190px', 
+                    width: '144px', 
+                    height: '205px', 
                     objectFit: 'cover', 
                     borderRadius: '8px',
                     border: '1px solid #eee'
@@ -280,8 +290,8 @@ const MainPage = () => {
               ) : (
                 <div
                   style={{
-                    width: '140px',
-                    height: '190px',
+                    width: '144px',
+                    height: '205px',
                     backgroundColor: '#e9ecef',
                     color: '#6c757d',
                     display: 'flex',
@@ -300,35 +310,49 @@ const MainPage = () => {
               <div style={{ marginTop: '1rem' }}>
                 <h3 style={{ 
                   margin: '0 0 0.5rem 0', 
-                  fontSize: '16px',
+                  fontSize: '17px',
                   fontWeight: 'bold',
-                  color: '#333',
+                  color: 'black',
                   lineHeight: '1.3'
                 }}>
                   {book.title}
                 </h3>
                 
                 {book.bookCategory && (
-                  <div style={{ 
-                    fontSize: '12px', 
-                    color: '#666',
-                    backgroundColor: '#f8f9fa',
-                    padding: '2px 8px',
-                    borderRadius: '12px',
-                    display: 'inline-block',
-                    marginBottom: '0.25rem'
-                  }}>
-                    {book.bookCategory}
+                  <div style={{ marginBottom: '0rem' }}>
+                    {book.bookCategory.split(',').map((category, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          fontSize: '13px',
+                          color: 'rgb(13, 42, 207)',
+                          padding: '2px 8px',
+                          borderRadius: '12px',
+                          display: 'inline-block',
+                          marginRight: '0.3rem',
+                          marginBottom: '0rem',
+                        }}
+                      >
+                        #{category.trim()}
+                      </span>
+                    ))}
                   </div>
                 )}
-                
+
                 {book.bookTag && (
-                  <div style={{ 
-                    fontSize: '11px', 
-                    color: '#888',
-                    marginTop: '0.25rem'
-                  }}>
-                    #{book.bookTag}
+                  <div style={{ marginTop: '0.25rem' }}>
+                    {book.bookTag.split(',').map((tag, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          fontSize: '12px',
+                          color: 'rgb(93, 96, 110)',
+                          marginRight: '0.3rem',
+                        }}
+                      >
+                        #{tag.trim()}
+                      </span>
+                    ))}
                   </div>
                 )}
 
@@ -336,7 +360,9 @@ const MainPage = () => {
                   <div style={{ 
                     fontSize: '10px', 
                     color: '#aaa',
-                    marginTop: '0.5rem'
+                    marginTop: '0.8rem',
+                    
+                    
                   }}>
                     {new Date(book.createdAt).toLocaleDateString()}
                   </div>
@@ -353,16 +379,13 @@ const MainPage = () => {
           onClick={fetchBooks}
           style={{
             padding: '0.5rem 1rem',
-            fontSize: '14px',
-            backgroundColor: '#6c757d',
-            color: 'white',
+            fontSize: '15px',
+            backgroundColor: 'white',
+            color: 'black',
             border: 'none',
             borderRadius: '6px',
             cursor: 'pointer'
-          }}
-        >
-          🔄 새로고침
-        </button>
+          }}>🔄 새로고침</button>
       </div>
     </div>
   );
