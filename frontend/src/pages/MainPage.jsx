@@ -11,7 +11,7 @@ const MainPage = () => {
     <div style={{ padding: '2rem' }}>
       {/* 상단 버튼/검색 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-        <button onClick={() => navigate('/books/register')}>📘 책 등록</button>
+        <button onClick={() => navigate('/register')}>📘 책 등록</button>
         <div>
           <input type="text" placeholder="검색어를 입력하세요" />
           <button>검색</button>
