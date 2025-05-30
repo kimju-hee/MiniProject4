@@ -237,17 +237,15 @@ const BookRegister = () => {
         {/* 하단 버튼들 */}
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <button 
-            onClick={handleSubmitWithAICover} 
-            disabled={loading || generating || !title.trim() || !content.trim()}
-            style={{
-              ...buttonStyle,
-              backgroundColor: (loading || generating || !title.trim() || !content.trim()) 
-                ? '#ccc' : '#ff6b35',
-              flex: 1,
-              minWidth: '180px'
-            }}
-          >
-            {loading ? '🤖 AI 등록 중...' : '🤖 AI 표지와 함께 등록'}
+              onClick={handleSubmitWithAICover} 
+              disabled={loading || generating || !title.trim() || !content.trim() || !coverImage}
+              style={{
+                ...buttonStyle,
+                backgroundColor: (loading || generating || !title.trim() || !content.trim() || !coverImage) 
+                  ? '#ccc' : '#20c997',
+                flex: 1,
+                minWidth: '180px'
+              }}>{loading ? '🤖 AI 등록 중...' : '🤖 AI 표지와 함께 등록'}
           </button>
           
           <button 
@@ -256,7 +254,7 @@ const BookRegister = () => {
             style={{
               ...buttonStyle,
               backgroundColor: (loading || generating || !title.trim() || !content.trim()) 
-                ? '#ccc' : 'rgb(17, 159, 224)',
+                ? '#ccc' : '#285be6',
               flex: 1,
               minWidth: '120px'
             }}
@@ -271,11 +269,9 @@ const BookRegister = () => {
               ...buttonStyle,
               backgroundColor: (loading || generating) ? '#ccc' : '#6c757d',
               flex: 1,
-              minWidth: '100px'
+              minWidth: '100px' 
             }}
-          >
-            ❌ 취소
-          </button>
+          >❌ 취소</button>
         </div>
       </div>
 
@@ -347,7 +343,11 @@ const BookRegister = () => {
               backgroundColor: (generating || loading || !title.trim()) ? '#ccc' : '#28a745'
             }}
           >
-            {generating ? '🎨 AI 생성 중...' : '🤖 AI 북커버 미리보기'}
+            {generating 
+              ? '🎨 AI 생성 중...' 
+              : coverImage 
+                ? '🔄 AI 북커버 재생성' 
+                : '🤖 AI 북커버 미리보기'}
           </button>
           
           {coverImage && (
