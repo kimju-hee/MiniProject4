@@ -16,7 +16,7 @@ const MainPage = () => {
                   width: '80px',
                   height: '30px',
                   fontSize: '16px',
-                  backgroundColor: 'rgb(31, 203, 255)',
+                  backgroundColor: 'rgb(9, 156, 201)',
                   color: 'rgb(0, 0, 0)',
                   border: 'none',
                   borderRadius: '8px',
