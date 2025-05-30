@@ -15,6 +15,8 @@ public class BookResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String coverUrl;
+    private String bookCategory;
+    private String bookTag;
 
     public BookResponseDto(Book book) {
         this.id = book.getBookId();
@@ -23,6 +25,8 @@ public class BookResponseDto {
         this.createdAt = book.getCreatedAt();
         this.updatedAt = book.getUpdatedAt();
         this.coverUrl = book.getCoverUrl();
+        this.bookCategory = book.getBookCategory();
+        this.bookTag = book.getBookTag();
     }
 }
 

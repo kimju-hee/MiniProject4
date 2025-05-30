@@ -27,6 +27,9 @@ public class Book {
 
     private String coverUrl;
 
+    private String bookCategory;
+    private String bookTag;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "userId")
     private User user;
