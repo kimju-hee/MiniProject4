@@ -82,14 +82,27 @@ const Book_Edit = () => {
             표지 없음
           </div>
         )}
-        <button onClick={GenerateCover} style={{ marginBottom: '1rem' }}>
+        <button onClick={GenerateCover} style={buttonStyle}>
           AI 북커버 생성
         </button>
         <br />
-        <button onClick={Update}>수정</button>
+        <button onClick={Update} style={buttonStyle}>수정하기기</button>
       </div>
     </div>
   );
 };
-
+const buttonStyle = {
+  width: '150px',
+  height: '40px',
+  backgroundColor: 'rgb(17, 159, 224)',
+  color: 'white',
+  fontSize: '16px',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',              
+  padding: '0.5rem 0.5rem',
+};
 export default Book_Edit;
