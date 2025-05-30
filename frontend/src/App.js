@@ -1,6 +1,5 @@
 import logo from './logo.svg';
 import './App.css';
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainPage from './pages/MainPage';
 import BookRegister from './pages/BookRegister';
@@ -9,27 +8,16 @@ import Book_Edit from './pages/Book_Edit';
 import RegisterBook from "./components/RegisterBook";
 import "./style.css";
 function App() {
-    useEffect(() => {
+    /*useEffect(() => {
       fetch("http://localhost:8080/books")
         .then((res) => res.json())
         .then((data) => console.log(data));
-    }, []);
+    }, []);*/
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-
+        
           <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainPage />} />
@@ -40,7 +28,6 @@ function App() {
 
       </Routes>
     </BrowserRouter>
-        </a>
       </header>
     </div>
   );
