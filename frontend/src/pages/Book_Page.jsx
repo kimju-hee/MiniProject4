@@ -25,12 +25,13 @@ const Book_Page = () => {
       {/* 왼쪽: 북커버 및 메타 정보 */}
       <div style={{ flex: 1, borderRight: '1px solid #ccc', paddingRight: '1rem' }}>
         {book.coverImage ? (
-          <img src={book.coverImage} alt="cover" style={{ width: '100%', maxHeight: '300px', objectFit: 'cover' }} />
+          <img src={book.coverImage} alt="cover" style={{ width: '210px', maxHeight: '296px', objectFit: 'cover' }} />
         ) : (
           <div style={{
             background: 'black',
             color: 'white',
-            height: '300px',
+            width: '210px', 
+            height: '296px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -46,16 +47,45 @@ const Book_Page = () => {
       </div>
 
       {/* 오른쪽: 본문 내용 */}
-      <div style={{ flex: 2, maxHeight: '400px', overflowY: 'scroll', paddingRight: '1rem' }}>
-        <h3>책 내용</h3>
-        <p style={{ whiteSpace: 'pre-wrap' }}>{book.content}</p>
-        <div style={{ marginTop: '1rem', textAlign: 'right' }}>
-          <button onClick={Edit} style={{ marginRight: '1rem' }}>책 수정</button>
-          <button onClick={Delete}>책 삭제</button>
+      <div style={{ flex: 2, display: 'flex', flexDirection: 'column' }}>
+        {/* 스크롤 영역 */}
+        <div style={{
+          flex: 1,
+          maxHeight: '500px',
+          overflowY: 'auto',
+          paddingRight: '1rem'
+        }}>
+          <h3>책 내용</h3>
+          <p style={{ whiteSpace: 'pre-wrap' }}>{book.content}</p>
+        </div>
+
+        {/* 버튼 영역 (스크롤 영향 없음) */}
+        <div style={{
+          marginTop: '2rem',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1rem'
+        }}>
+          <button onClick={Edit} style={buttonStyle}>책 수정</button>
+          <button onClick={Delete} style={buttonStyle}>책 삭제</button>
         </div>
       </div>
     </div>
   );
 };
-
+const buttonStyle = {
+  width: '150px',
+  height: '40px',
+  backgroundColor: 'rgb(17, 159, 224)',
+  color: 'white',
+  fontSize: '16px',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',              
+  padding: '0.5rem 0.5rem',
+};
 export default Book_Page;

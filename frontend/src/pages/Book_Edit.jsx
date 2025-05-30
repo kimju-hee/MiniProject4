@@ -63,7 +63,7 @@ const Book_Edit = () => {
       </div>
 
       {/* 오른쪽: 북커버 및 버튼 */}
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', }}>
         {coverImage ? (
           <img src={coverImage} alt="book cover" style={{ width: '150px', height: '200px' }} />
         ) : (
@@ -82,11 +82,12 @@ const Book_Edit = () => {
             표지 없음
           </div>
         )}
-        <button onClick={GenerateCover} style={buttonStyle}>
-          AI 북커버 생성
-        </button>
+        <button onClick={GenerateCover} style={buttonStyle}>AI 북커버 생성</button>
+        <button onClick={Update} style={buttonStyle}>수정하기</button> 
+        <button onClick={() => navigate('/')} style={buttonStyle}>취소</button>
         <br />
-        <button onClick={Update} style={buttonStyle}>수정하기기</button>
+        
+        
       </div>
     </div>
   );

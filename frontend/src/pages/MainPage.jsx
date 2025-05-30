@@ -13,10 +13,10 @@ const MainPage = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
         <button onClick={() => navigate('/register')}
                   style={{
-                  width: '80px',
+                  width: '105px',
                   height: '30px',
                   fontSize: '16px',
-                  backgroundColor: 'rgb(9, 156, 201)',
+                  backgroundColor: 'rgb(17, 159, 224)',
                   color: 'rgb(0, 0, 0)',
                   border: 'none',
                   borderRadius: '8px',
@@ -35,15 +35,15 @@ const MainPage = () => {
           <button style={{
             padding: '0.5rem 0.5rem',
             fontSize: '16px',
-            width: '60px',
+            width: '105px',
             height: '30px',
-            backgroundColor: 'rgb(0, 119, 255)',
+            backgroundColor: 'rgb(17, 159, 224)',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
             display: 'flex',
             alignItems: 'center',justifyContent: 'center',
-            cursor: 'pointer'}}>검색</button>
+            cursor: 'pointer',}}>검색</button>
         </div>
       </div>
 
@@ -80,7 +80,7 @@ const MainPage = () => {
                   표지 없음
                 </div>
               )}
-              <div style={{ marginTop: '0.5rem' }}>{book.title}</div>
+              <div style={{ marginTop: '1rem',}}>{book.title}</div>
             </div>
           ))
         )}
