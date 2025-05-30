@@ -14,6 +14,6 @@ public class BookRequestDto {
     private String content;
     private String coverUrl;
     private Long userId;
-    private String bookCategori;
+    private String bookCategory;
     private String bookTag;
 }

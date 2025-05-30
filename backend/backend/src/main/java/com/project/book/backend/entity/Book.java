@@ -27,7 +27,7 @@ public class Book {
 
     private String coverUrl;
 
-    private String bookCategori;
+    private String bookCategory;
     private String bookTag;
 
     @ManyToOne(fetch = FetchType.LAZY)
