@@ -53,20 +53,24 @@ const MainPage = () => {
           <div>등록된 도서가 없습니다.</div>
         ) : (
           storedBooks.map((book) => (
-            <div
-              key={book.id}
-              style={{ cursor: 'pointer', textAlign: 'center' }}
-              onClick={() => navigate(`/books/${book.id}`)}
+            <div key={book.id} onClick={() => navigate(`/books/${book.id}`)}
+              style={{
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center', 
+              }}
             >
               {book.coverImage ? (
-                <img
-                  src={book.coverImage}
+                <img src={book.coverImage}
                   alt="book cover"
-                  style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '4px' }}
-                />
-              ) : (
-                <div
                   style={{
+                    width: '105px',
+                    height: '148px',
+                    objectFit: 'cover',
+                    borderRadius: '4px',
+                  }}/>) : (
+                <div style={{
                     width: '105px',
                     height: '148px',
                     backgroundColor: 'black',
@@ -75,12 +79,16 @@ const MainPage = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     borderRadius: '4px',
-                  }}
-                >
-                  표지 없음
-                </div>
+                  }}>표지 없음</div>
               )}
-              <div style={{ marginTop: '1rem',}}>{book.title}</div>
+              <div
+                style={{
+                  marginTop: '1rem',
+                  textAlign: 'center',
+                }}
+              >
+                {book.title}
+              </div>
             </div>
           ))
         )}

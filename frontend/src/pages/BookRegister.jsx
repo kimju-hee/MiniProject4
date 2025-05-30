@@ -11,6 +11,7 @@ const BookRegister = () => {
   const [content, setContent] = useState('');
   const [coverImage, setCoverImage] = useState(null);
 
+//경로 수정 필요요
   const generateCover = () => {
     setCoverImage('https://via.placeholder.com/150x200.png?text=AI+북커버');
   };
@@ -67,12 +68,12 @@ const BookRegister = () => {
       {/* 오른쪽: 북커버 및 버튼 */}
       <div style={{ textAlign: 'center' }}>
         {coverImage ? (
-          <img src={coverImage} alt="book cover" style={{ width: '150px', height: '200px' }} />
+          <img src={coverImage} alt="book cover" style={{ width: '157px', height: '244px' }} />
         ) : (
           <div
             style={{
-              width: '150px',
-              height: '200px',
+              width: '157px',
+              height: '244px',
               backgroundColor: 'black',
               color: 'white',
               display: 'flex',
