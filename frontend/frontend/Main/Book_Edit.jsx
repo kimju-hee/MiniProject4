@@ -1,41 +1,42 @@
-// src/pages/BookRegister.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// src/pages/Book_Edit.jsx
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
-const BookRegister = () => {
+const Book_Edit = () => {
+  const { id } = useParams(); // URL에서 책 ID 추출
   const navigate = useNavigate();
 
-  // 입력 필드 상태 관리
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [tags, setTags] = useState('');
   const [content, setContent] = useState('');
-  const [coverImage, setCoverImage] = useState(null); // AI 생성 결과 자리
+  const [coverImage, setCoverImage] = useState(null);
 
-  // AI 북커버 생성 (더미)
-  const generateCover = () => {
-    // 실제 API 호출은 나중에 연동
+  // 책 정보 로딩
+  useEffect(() => {
+    const books = JSON.parse(localStorage.getItem('books') || '[]');
+    const book = books.find((b) => b.id === Number(id));
+    if (book) {
+      setTitle(book.title || '');
+      setCategory(book.category || '');
+      setTags(book.tags || '');
+      setContent(book.content || '');
+      setCoverImage(book.coverImage || null);
+    }
+  }, [id]);
+
+  // AI 북커버 생성 (가짜)
+  const GenerateCover = () => {
     setCoverImage('https://via.placeholder.com/150x200.png?text=AI+북커버');
   };
 
-  const Submit = () => {
-    // 나중에 백엔드로 POST 요청을 보내는 로직 추가 예정
-    const newBook = {
-      id: Date.now(), // 임시 ID
-      title,
-      coverImage,
-    };
-
-    // localStorage를 이용해 메인화면에서 확인 가능하게 유지
-    const existingBooks = JSON.parse(localStorage.getItem('books') || '[]');
-    localStorage.setItem('books', JSON.stringify([...existingBooks, newBook]));
-
-    navigate('/');
+  // 수정 버튼 클릭 시 알림
+  const Update = () => {
   };
 
   return (
     <div style={{ display: 'flex', padding: '2rem', gap: '2rem' }}>
-      {/* 왼쪽: 입력 폼 */}
+      {/* 왼쪽 입력 필드 */}
       <div style={{ flex: 1 }}>
         <div>
           <label>1. 작품 제목</label><br />
@@ -61,10 +62,10 @@ const BookRegister = () => {
         </div>
       </div>
 
-      {/* 오른쪽: 북커버 + 버튼 */}
+      {/* 오른쪽: 북커버 및 버튼 */}
       <div style={{ textAlign: 'center' }}>
         {coverImage ? (
-          <img src={coverImage} alt="생성된 표지" style={{ width: '150px', height: '200px' }} />
+          <img src={coverImage} alt="book cover" style={{ width: '150px', height: '200px' }} />
         ) : (
           <div
             style={{
@@ -81,19 +82,14 @@ const BookRegister = () => {
             표지 없음
           </div>
         )}
-
-        <button onClick={generateCover} style={{ marginBottom: '1rem' }}>
+        <button onClick={GenerateCover} style={{ marginBottom: '1rem' }}>
           AI 북커버 생성
         </button>
         <br />
-        <button onClick={Submit} style={{ marginBottom: '0.5rem' }}>
-          등록
-        </button>
-        <br />
-        <button onClick={() => navigate('/')}>취소</button>
+        <button onClick={Update}>수정</button>
       </div>
     </div>
   );
 };
 
-export default BookRegister;
+export default Book_Edit;
