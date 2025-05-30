@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function BookForm() {
+function RegisterBook() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [tags, setTags] = useState("");
@@ -9,82 +9,39 @@ function BookForm() {
   const [coverImage, setCoverImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const generateCover = async () => {
-  setLoading(true);
-  try {
-    const gptResponse = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-4",
-        messages: [
-          {
-            role: "system",
-            content: "You are an assistant that creates short, vivid prompts for generating book cover illustrations using DALL·E."
-          },
-          {
-            role: "user",
-            content: `
-제목: ${title}
-카테고리: ${category}
-태그: ${tags}
-내용: ${content}
-위 정보를 바탕으로 영어로, 시각적으로 표현 가능한 DALL·E용 북커버 생성 프롬프트 한 문단만 작성해줘.
-`
-          }
-        ],
-        temperature: 0.8
-      },
-      {
-        headers: {
-          "Authorization": `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
-
-    const prompt = gptResponse.data.choices[0].message.content.trim();
-    console.log("GPT 생성 프롬프트:", prompt);
-
-    const imageResponse = await axios.post(
-      "https://api.openai.com/v1/images/generations",
-      {
-        prompt: prompt,
-        n: 1,
-        size: "512x512"
-      },
-      {
-        headers: {
-          "Authorization": `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
-
-    const imageUrl = imageResponse.data.data[0].url;
-    setCoverImage(imageUrl);
-  } catch (error) {
-    alert("이미지 생성 실패: " + error.message);
-    console.error("오류 상세:", error.response?.data || error.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  const userId = 1; // 현재 사용자 ID (임시 하드코딩)
 
   const register = async () => {
-    const book = {
-      title,
-      category,
-      tags,
-      content,
-      coverImage
-    };
-
     try {
-      await axios.post("http://localhost:8080/api/books", book);
-      alert("등록 완료!");
-    } catch (error) {
-      alert("등록 실패: " + error.message);
+      const bookRes = await axios.post("http://localhost:8080/books", {
+        title,
+        content,
+        coverUrl: "", // 생성 전
+        userId
+      });
+
+      const bookId = bookRes.data.bookId;
+      alert("책이 등록되었습니다. bookId: " + bookId);
+
+      await generateCover(bookId);
+    } catch (err) {
+      alert("책 등록 실패: " + err.message);
+    }
+  };
+
+  const generateCover = async (bookId) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`http://localhost:8080/books/${bookId}/generate`);
+
+      const imageUrl = response.data.coverUrl;
+      setCoverImage(imageUrl);
+      alert("표지 생성 완료!");
+    } catch (err) {
+      alert("표지 생성 실패: " + err.message);
+      console.error("서버 오류:", err.response?.data || err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -115,11 +72,10 @@ function BookForm() {
             "AI 북커버 생성 결과"
           )}
         </div>
-        <button onClick={generateCover}>AI 북커버 생성</button>
-        <button onClick={register}>등록</button>
+        <button onClick={register}>책 등록 & 표지 생성</button>
       </div>
     </div>
   );
 }
 
-export default BookForm;
+export default RegisterBook;

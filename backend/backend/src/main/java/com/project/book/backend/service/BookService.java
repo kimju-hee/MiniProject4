@@ -36,9 +36,9 @@ public class BookService {
         Book book = new Book();
         book.setTitle(dto.getTitle());
         book.setContent(dto.getContent());
+        book.setCoverUrl(dto.getCoverUrl());
         book.setCreatedAt(LocalDateTime.now());
         book.setUpdatedAt(LocalDateTime.now());
-        // User 연관관계 처리 필요하면 추가하세요
 
         Book savedBook = bookRepository.save(book);
         return new BookResponseDto(savedBook);
@@ -62,7 +62,6 @@ public class BookService {
     public String generateCoverImage(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 도서가 없습니다. id=" + id));
-        // 커버 이미지 생성 로직 (예: URL 생성)
         String coverUrl = "https://fakeimage.com/covers/" + id + ".jpg";
         book.setCoverUrl(coverUrl);
         bookRepository.save(book);

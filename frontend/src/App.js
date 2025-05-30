@@ -1,6 +1,3 @@
-import logo from './logo.svg';
-import './App.css';
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainPage from './pages/MainPage';
 import BookRegister from './pages/BookRegister';
@@ -11,14 +8,17 @@ import React, { useEffect } from 'react';
 import RegisterBook from "./components/RegisterBook";
 import "./style.css";
 function App() {
-    useEffect(() => {
+    /*useEffect(() => {
       fetch("http://localhost:8080/books")
         .then((res) => res.json())
         .then((data) => console.log(data));
-    }, []);
+    }, []);*/
 
   return (
-    <BrowserRouter>
+    <div className="App">
+      <header className="App-header">
+        
+          <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainPage />} />
         {/* 나중에 도서 등록/상세 페이지 경로도 여기에 추가 가능 */}
@@ -28,6 +28,8 @@ function App() {
 
       </Routes>
     </BrowserRouter>
+      </header>
+    </div>
   );
 }
 
