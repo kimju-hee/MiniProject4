@@ -7,6 +7,13 @@ import Book_Edit from './pages/Book_Edit';
 
 
 function App() {
+
+    useEffect(() => {
+      fetch("http://localhost:8080/books")
+        .then((res) => res.json())
+        .then((data) => console.log(data));
+    }, []);
+
   return (
     <BrowserRouter>
       <Routes>
