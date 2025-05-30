@@ -1,10 +1,16 @@
 package com.project.book.backend.entity;
 
+import com.project.book.backend.entity.User;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Book {
 
     @Id

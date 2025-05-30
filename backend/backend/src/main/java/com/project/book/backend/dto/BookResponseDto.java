@@ -1,13 +1,28 @@
 package com.project.book.backend.dto;
 
+import com.project.book.backend.entity.Book;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
+@Getter
+@NoArgsConstructor
 public class BookResponseDto {
-    private Long bookId;
+    private Long id;
     private String title;
     private String content;
-    private String coverUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Long userId;
+    private String coverUrl;
+
+    public BookResponseDto(Book book) {
+        this.id = book.getBookId();
+        this.title = book.getTitle();
+        this.content = book.getContent();
+        this.createdAt = book.getCreatedAt();
+        this.updatedAt = book.getUpdatedAt();
+        this.coverUrl = book.getCoverUrl();
+    }
 }
+

@@ -2,14 +2,71 @@ package com.project.book.backend.service;
 
 import com.project.book.backend.dto.BookRequestDto;
 import com.project.book.backend.dto.BookResponseDto;
+import com.project.book.backend.entity.Book;
+import com.project.book.backend.repository.BookRepository;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public interface BookService {
-    List<BookResponseDto> findAll();
-    BookResponseDto findById(Long id);
-    BookResponseDto save(BookRequestDto dto);
-    BookResponseDto update(Long id, BookRequestDto dto);
-    void delete(Long id);
-    String generateCoverImage(Long id);
+@Service
+public class BookService {
+
+    private final BookRepository bookRepository;
+
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    public List<BookResponseDto> findAll() {
+        List<Book> books = bookRepository.findAll();
+        return books.stream()
+                .map(book -> new BookResponseDto(book))
+                .collect(Collectors.toList());
+    }
+
+    public BookResponseDto findById(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 도서가 없습니다. id=" + id));
+        return new BookResponseDto(book);
+    }
+
+    public BookResponseDto save(BookRequestDto dto) {
+        Book book = new Book();
+        book.setTitle(dto.getTitle());
+        book.setContent(dto.getContent());
+        book.setCreatedAt(LocalDateTime.now());
+        book.setUpdatedAt(LocalDateTime.now());
+        // User 연관관계 처리 필요하면 추가하세요
+
+        Book savedBook = bookRepository.save(book);
+        return new BookResponseDto(savedBook);
+    }
+
+    public BookResponseDto update(Long id, BookRequestDto dto) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 도서가 없습니다. id=" + id));
+        book.setTitle(dto.getTitle());
+        book.setContent(dto.getContent());
+        book.setUpdatedAt(LocalDateTime.now());
+
+        Book updatedBook = bookRepository.save(book);
+        return new BookResponseDto(updatedBook);
+    }
+
+    public void delete(Long id) {
+        bookRepository.deleteById(id);
+    }
+
+    public String generateCoverImage(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 도서가 없습니다. id=" + id));
+        // 커버 이미지 생성 로직 (예: URL 생성)
+        String coverUrl = "https://fakeimage.com/covers/" + id + ".jpg";
+        book.setCoverUrl(coverUrl);
+        bookRepository.save(book);
+
+        return coverUrl;
+    }
 }
