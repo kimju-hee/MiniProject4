@@ -25,10 +25,11 @@ public class Book {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private String coverUrl;
-
     private String bookCategory;
     private String bookTag;
+
+    @Column(length = 500)
+    private String coverUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "userId")
