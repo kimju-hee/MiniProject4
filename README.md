@@ -1,7 +1,39 @@
 # 📘 Book Cover Generator
 
+# 📚 도서 관리 프로젝트
+
 AI를 활용해 책 제목, 장르, 키워드, 내용을 입력하면 **AI 기반 이미지 생성 API**로 **북커버(책 표지)**를 자동 생성해주는 웹 애플리케이션입니다.  
 생성된 이미지는 저장하여 한 눈에 확인할 수 있으며, 사용자는 OpenAI의 이미지 생성 기능(DALL·E)을 활용하여 창작물을 시각적으로 표현할 수 있습니다.
+
+
+## 참여 인원
+<a href="https://github.com/kimju-hee" align="center">
+  <img src="https://img.shields.io/badge/kimjuhee-ed61e6?style=flat-square"/>
+</a>
+<a href="https://github.com/egoing" align="center">
+  <img src="https://img.shields.io/badge/egoing-f28b82?style=flat-square"/>
+</a>
+<a href="https://github.com/wonjun4149" align="center">
+  <img src="https://img.shields.io/badge/wonjun4149-fbbc04?style=flat-square"/>
+</a>
+<a href="https://github.com/byeongchan" align="center">
+  <img src="https://img.shields.io/badge/byeongchan-34a853?style=flat-square"/>
+</a>
+<a href="https://github.com/yooon613" align="center">
+  <img src="https://img.shields.io/badge/yooon613-4285f4?style=flat-square"/>
+</a>
+<a href="https://github.com/mina-dong" align="center">
+  <img src="https://img.shields.io/badge/mina--dong-ff8a65?style=flat-square&logoColor=white">
+</a>
+
+<a href="https://github.com/7250khm" align="center">
+  <img src="https://img.shields.io/badge/7250khm-a142f4?style=flat-square"/>
+</a>
+<a href="https://github.com/red0pyo" align="center">
+  <img src="https://img.shields.io/badge/red0pyo-f44292?style=flat-square"/>
+</a>
+
+
 
 
 ---
@@ -26,12 +58,19 @@ AI를 활용해 책 제목, 장르, 키워드, 내용을 입력하면 **AI 기�
 ---
 
 ## 🧩 사용 기술 스택
+💻 Frontend
 
-| 분야      | 기술            |
-| ------- | ------------- |
-| 프론트엔드   | React.js      |
-| 이미지 생성  | OpenAI DALL·E |
-| HTTP 통신 | Axios         |
+<p> <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black"> </p>
+🖥 Backend
+
+<p> <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/JPA-007396?style=flat-square&logo=hibernate&logoColor=white"> </p>
+🗂 Version Control
+
+<p> <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white"> </p>
+
+🎨 이미지 생성 및 HTTP 통신
+
+<p> <img src="https://img.shields.io/badge/Axios-5A29E4?style=flat-square&logo=axios&logoColor=white"> <img src="https://img.shields.io/badge/DALL·E-000000?style=flat-square&logo=openai&logoColor=white"> </p>
 
 
 ## 📁 프로젝트 구조
