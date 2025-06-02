@@ -10,8 +10,8 @@ AI를 활용해 책 제목, 장르, 키워드, 내용을 입력하면 **AI 기�
 <a href="https://github.com/kimju-hee" align="center">
   <img src="https://img.shields.io/badge/kimjuhee-ed61e6?style=flat-square"/>
 </a>
-<a href="https://github.com/egoing" align="center">
-  <img src="https://img.shields.io/badge/egoing-f28b82?style=flat-square"/>
+<a href="https://github.com/Jinwoo1104" align="center">
+  <img src="https://img.shields.io/badge/Jinwoo1104-f28b82?style=flat-square"/>
 </a>
 <a href="https://github.com/wonjun4149" align="center">
   <img src="https://img.shields.io/badge/wonjun4149-fbbc04?style=flat-square"/>
