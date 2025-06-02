@@ -202,7 +202,7 @@ const BookRegister = () => {
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ fontWeight: 'bold', color: '#555' }}>2. 작품 카테고리</label><br />
+          <label style={{ fontWeight: 'bold', color: '#555' }}>2. 작품 장르</label><br />
           <input 
             value={category} 
             onChange={(e) => setCategory(e.target.value)} 
@@ -417,7 +417,7 @@ const BookRegister = () => {
         }}>
           <strong>💡 AI 북커버 생성 팁:</strong><br/>
           • <strong>제목:</strong> 명확하고 구체적으로 입력<br/>
-          • <strong>카테고리:</strong> 장르를 정확히 입력 (판타지, 로맨스 등)<br/>
+          • <strong>장르:</strong> 장르를 정확히 입력 (판타지, 로맨스 등)<br/>
           • <strong>태그:</strong> 주요 키워드나 테마 입력<br/>
           • <strong>내용:</strong> 줄거리와 분위기를 자세히 작성<br/>
           • 내용이 구체적일수록 더 정확한 표지 생성<br/>
