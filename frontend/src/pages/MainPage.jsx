@@ -133,7 +133,7 @@ const MainPage = () => {
         }}>
           <input 
             type="text" 
-            placeholder="제목, 카테고리, 태그로 검색..." 
+            placeholder="제목, 장르, 태그로 검색..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyPress={handleKeyPress}

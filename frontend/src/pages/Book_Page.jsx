@@ -9,6 +9,7 @@ const Book_Page = () => {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [generating, setGenerating] = useState(false); // 표지 생성 중 상태
 
   // 책 정보 가져오기
   const fetchBook = async () => {
@@ -31,9 +32,7 @@ const Book_Page = () => {
 
   // 책 삭제
   const handleDelete = async () => {
-    if (!window.confirm('정말로 이 책을 삭제하시겠습니까?')) {
-      return;
-    }
+    if (!window.confirm('정말로 이 책을 삭제하시겠습니까?')) return;
 
     try {
       setDeleting(true);
@@ -47,33 +46,34 @@ const Book_Page = () => {
     }
   };
 
-  // 수정 페이지로 이동
+  // 책 수정 이동
   const handleEdit = () => {
     navigate(`/books/edit/${id}`);
   };
 
   // 표지 재생성
   const handleRegenerateCover = async () => {
-    if (!window.confirm('새로운 AI 표지를 생성하시겠습니까?')) {
-      return;
-    }
+    if (!window.confirm('새로운 AI 표지를 생성하시겠습니까?')) return;
 
     try {
+      setGenerating(true);
       const response = await axios.post(`http://localhost:8080/books/${id}/generate`);
       setBook(prev => ({ ...prev, coverUrl: response.data.coverUrl }));
       alert('새로운 표지가 생성되었습니다!');
     } catch (error) {
       console.error('표지 생성 실패:', error);
       alert('표지 생성에 실패했습니다.');
+    } finally {
+      setGenerating(false);
     }
   };
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         fontSize: '18px'
       }}>
@@ -84,16 +84,13 @@ const Book_Page = () => {
 
   if (!book) {
     return (
-      <div style={{ 
-        textAlign: 'center', 
+      <div style={{
+        textAlign: 'center',
         padding: '4rem',
         color: '#666'
       }}>
         <h2>❌ 도서를 찾을 수 없습니다</h2>
-        <button 
-          onClick={() => navigate('/')}
-          style={buttonStyle}
-        >
+        <button onClick={() => navigate('/')} style={buttonStyle}>
           🏠 홈으로 돌아가기
         </button>
       </div>
@@ -101,16 +98,16 @@ const Book_Page = () => {
   }
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      padding: '2rem', 
+    <div style={{
+      display: 'flex',
+      padding: '2rem',
       gap: '1.5rem',
       minHeight: '100vh',
       backgroundColor: '#f8f9fa',
     }}>
-      {/* 왼쪽: 북커버 및 메타 정보 */}
-      <div style={{ 
-        flex: 1, 
+      {/* 왼쪽 영역 */}
+      <div style={{
+        flex: 1,
         maxWidth: '400px',
         backgroundColor: 'white',
         padding: '2rem',
@@ -118,26 +115,26 @@ const Book_Page = () => {
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
         height: 'fit-content'
       }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <div style={{ position: 'relative', textAlign: 'center', marginBottom: '2rem' }}>
           {book.coverUrl ? (
-            <img 
-              src={book.coverUrl} 
-              alt="cover" 
-              style={{ 
+            <img
+              src={book.coverUrl}
+              alt="cover"
+              style={{
                 width: '270px',
-                height: '360px', // 책 표지 비율 (3:4)로 고정
-                objectFit: 'cover', // 좌우를 자르면서 비율에 맞춤
+                height: '360px',
+                objectFit: 'cover',
                 borderRadius: '8px',
                 boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
                 border: '1px solid #ddd'
-              }} 
+              }}
             />
           ) : (
             <div style={{
               background: 'linear-gradient(135deg,rgb(199, 101, 255) 0%, #764ba2 100%)',
               color: 'white',
-              width: '270px', 
-              height: '380px', // 책 표지 비율에 맞게 조정
+              width: '270px',
+              height: '380px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -148,49 +145,59 @@ const Book_Page = () => {
               📚 표지 없음
             </div>
           )}
+
+          {/* 표지 생성 중 오버레이 */}
+          {generating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '270px',
+              height: '360px',
+              backgroundColor: 'rgba(255, 255, 255, 0.85)',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#444',
+              fontStyle: 'italic',
+              fontSize: '16px',
+              zIndex: 10,
+            }}>
+              🎨 AI가 표지를 생성 중입니다...
+            </div>
+          )}
         </div>
 
         <div style={{ textAlign: 'center' }}>
-          <h1 style={{ 
-            margin: '0 0 1rem 0', 
-            color: '#333',
-            fontSize: '24px',
-            lineHeight: '1.3'
-          }}>
+          <h1 style={{ margin: '0 0 1rem 0', color: '#333', fontSize: '24px', lineHeight: '1.3' }}>
             제목:{book.title}
           </h1>
-          
+
           {book.bookCategory && (
-            <div style={{ 
+            <div style={{
               display: 'inline-block',
-              color: '#rgb(46, 89, 233)',
+              color: 'rgb(46, 89, 233)',
               padding: '0.5rem 1rem',
               borderRadius: '20px',
               fontSize: '15px',
               fontWeight: 'bold',
               marginBottom: '1rem'
             }}>
-               카테고리:{book.bookCategory}
+              장르:{book.bookCategory}
             </div>
           )}
-          
+
           {book.bookTag && (
-            <div style={{ 
-              color: '#666',
-              fontSize: '14px',
-              marginBottom: '1rem'
-            }}>
+            <div style={{ color: '#666', fontSize: '14px', marginBottom: '1rem' }}>
               태그:{book.bookTag}
             </div>
           )}
 
           {book.createdAt && (
-            <div style={{ 
-              color: '#999',
-              fontSize: '12px',
-              marginBottom: '2rem'
-            }}>
-               등록:{new Date(book.createdAt).toLocaleDateString('ko-KR', {
+            <div style={{ color: '#999', fontSize: '12px', marginBottom: '2rem' }}>
+              등록:{new Date(book.createdAt).toLocaleDateString('ko-KR', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
@@ -198,14 +205,9 @@ const Book_Page = () => {
             </div>
           )}
 
-          {/* 버튼들 */}
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '0.75rem'
-          }}>
-            <button 
-              onClick={handleEdit} 
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <button
+              onClick={handleEdit}
               style={{
                 ...buttonStyle,
                 background: 'linear-gradient(135deg,rgb(60, 184, 29) 0%,rgb(12, 133, 28) 100%)'
@@ -213,35 +215,36 @@ const Book_Page = () => {
             >
               ✏️ 책 수정
             </button>
-            
-            <button 
+
+            <button
               onClick={handleRegenerateCover}
+              disabled={generating}
               style={{
                 ...buttonStyle,
                 background: 'linear-gradient(135deg,rgb(13, 71, 158) 0%,rgb(45, 150, 177) 100%)',
-                
+                opacity: generating ? 0.7 : 1,
+                cursor: generating ? 'not-allowed' : 'pointer'
               }}
             >
               🎨 표지 재생성
             </button>
-            
-            <button 
-              onClick={handleDelete} 
+
+            <button
+              onClick={handleDelete}
               disabled={deleting}
               style={{
                 ...buttonStyle,
-                background: 'linear-gradient(135deg,rgb(255, 5, 5) 0%,rgb(207, 57, 57) 100%)',
+                background: 'linear-gradient(135deg,rgb(255, 5, 5) 0%,rgb(207, 57, 57) 100%)'
               }}
             >
               {deleting ? '삭제 중...' : '🗑️ 책 삭제'}
             </button>
-            
-            <button 
+
+            <button
               onClick={() => navigate('/')}
               style={{
                 ...buttonStyle,
-                background: 'linear-gradient(135deg,rgb(58, 56, 56) 0%,rgb(77, 69, 69) 100%)',
-
+                background: 'linear-gradient(135deg,rgb(58, 56, 56) 0%,rgb(77, 69, 69) 100%)'
               }}
             >
               ≡ 목록으로
@@ -251,9 +254,9 @@ const Book_Page = () => {
       </div>
 
       {/* 오른쪽: 본문 내용 */}
-      <div style={{ 
-        flex: 2, 
-        display: 'flex', 
+      <div style={{
+        flex: 2,
+        display: 'flex',
         flexDirection: 'column',
         backgroundColor: 'white',
         borderRadius: '12px',
@@ -261,21 +264,15 @@ const Book_Page = () => {
         overflow: 'hidden',
         maxHeight: '905px',
       }}>
-        {/* 헤더 */}
         <div style={{
           padding: '2rem 2rem 1rem 2rem',
           borderBottom: '1px solid #eee'
         }}>
-          <h2 style={{ 
-            margin: 0, 
-            color: '#333',
-            fontSize: '20px'
-          }}>
+          <h2 style={{ margin: 0, color: '#333', fontSize: '20px' }}>
             📖 책 내용
           </h2>
         </div>
 
-        {/* 스크롤 가능한 내용 영역 */}
         <div style={{
           flex: 1,
           padding: '2rem',
@@ -283,19 +280,13 @@ const Book_Page = () => {
           lineHeight: '1.8',
           fontSize: '16px',
           maxHeight: 'calc(110vh - 150px)'
-        
-
         }}>
           {book.content ? (
-            <p style={{ 
-              whiteSpace: 'pre-wrap',
-              color: '#444',
-              margin: 0
-            }}>
+            <p style={{ whiteSpace: 'pre-wrap', color: '#444', margin: 0 }}>
               {book.content}
             </p>
           ) : (
-            <div style={{ 
+            <div style={{
               textAlign: 'center',
               color: '#999',
               fontStyle: 'italic',
