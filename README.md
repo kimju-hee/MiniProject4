@@ -34,10 +34,9 @@ AI를 활용해 책 제목, 장르, 키워드, 내용을 입력하면 **AI 기�
 | HTTP 통신 | Axios         |
 
 
----
-
 ## 📁 프로젝트 구조
 
+```
 🔙 Backend
 backend/
 └── src/
@@ -69,9 +68,11 @@ frontend/
 │   ├── index.js                   # 진입점
 │   ├── 스타일 및 테스트 관련 파일들
 ├── .env, package.json, README.md 등 설정 파일들
+```
 
+---
 
-📮 기타
-OpenAI API 키는 .env 파일에 별도로 관리합니다.
+📮 기타  
+OpenAI API 키는 `.env` 파일에 별도로 관리합니다.
 
 책 표지는 DALL·E 기반 이미지로 생성되며, 리스트 형태로 저장 및 관리가 가능합니다.
