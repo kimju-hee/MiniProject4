@@ -1,23 +1,28 @@
 package com.project.book.backend.service;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.book.backend.dto.BookRequestDto;
 import com.project.book.backend.dto.BookResponseDto;
 import com.project.book.backend.entity.Book;
 import com.project.book.backend.entity.User;
 import com.project.book.backend.repository.BookRepository;
 import com.project.book.backend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -119,8 +124,15 @@ public class BookService {
 
     // 실제 AI 표지 생성 로직
     private String generateCoverFromBookData(String title, String content, String category, String tag) {
-        if (openaiApiKey == null || openaiApiKey.trim().isEmpty()) {
-            System.out.println("⚠️ OpenAI API 키가 설정되지 않아 가상 표지를 생성합니다.");
+        // OpenAI API 키 검증 개선
+        if (openaiApiKey == null || openaiApiKey.trim().isEmpty() || 
+            openaiApiKey.equals("sk-") || openaiApiKey.startsWith("sk-proj-your") || 
+            openaiApiKey.contains("your-actual-api-key")) {
+            
+            System.out.println("⚠️ OpenAI API 키가 설정되지 않았습니다. 환경변수 OPENAI_API_KEY를 설정하거나 application.properties에서 올바른 키를 입력해주세요.");
+            System.out.println("현재 설정된 키: " + (openaiApiKey != null ? openaiApiKey.substring(0, Math.min(10, openaiApiKey.length())) + "..." : "null"));
+            
+            // 개발용 가상 표지 (실제 운영에서는 에러를 던지는 것이 좋음)
             return "https://picsum.photos/400/600?random=" + System.currentTimeMillis();
         }
 
@@ -133,8 +145,9 @@ public class BookService {
         } catch (Exception e) {
             System.err.println("❌ OpenAI API 호출 실패: " + e.getMessage());
             e.printStackTrace();
-            // 실패 시 기본 이미지 반환
-            return "https://picsum.photos/400/600?random=" + System.currentTimeMillis();
+            
+            // API 호출 실패 시에도 의미있는 오류 메시지와 함께 예외 발생
+            throw new RuntimeException("AI 표지 생성에 실패했습니다: " + e.getMessage(), e);
         }
     }
 
@@ -153,6 +166,8 @@ public class BookService {
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
 
+        System.out.println("🔗 OpenAI API 호출 시작...");
+        
         ResponseEntity<String> response = restTemplate.postForEntity(
             "https://api.openai.com/v1/images/generations", 
             request, 
@@ -160,7 +175,7 @@ public class BookService {
         );
 
         if (response.getStatusCode() != HttpStatus.OK) {
-            throw new RuntimeException("OpenAI API 호출 실패: " + response.getStatusCode());
+            throw new RuntimeException("OpenAI API 호출 실패: " + response.getStatusCode() + " - " + response.getBody());
         }
 
         JsonNode jsonNode = objectMapper.readTree(response.getBody());
@@ -173,8 +188,8 @@ public class BookService {
     private String createDetailedPrompt(String title, String content, String category, String tag) {
         StringBuilder prompt = new StringBuilder();
         
-        // 기본 프롬프트
-        prompt.append("Create a professional, eye-catching book cover illustration for a book titled \"")
+        // 기본 프롬프트 - 책 표지 디자인에 중점
+        prompt.append("Create a professional book cover design (front cover only, no book spine or 3D effect) for a book titled \"")
               .append(title != null ? title : "Untitled")
               .append("\"");
         
@@ -196,13 +211,17 @@ public class BookService {
             prompt.append(". Story context: ").append(contentSummary);
         }
         
-        // 디자인 가이드라인
+        // 디자인 가이드라인 - 평면 표지 디자인에 중점
         prompt.append(". Design requirements: ")
-              .append("- Professional book cover suitable for commercial publishing ")
+              .append("- Create a flat, 2D book cover design (front cover only, not a 3D book mockup) ")
+              .append("- Professional book cover illustration suitable for commercial publishing ")
               .append("- Eye-catching and genre-appropriate visual style ")
-              .append("- Clear composition with space for title text overlay ")
+              .append("- Artistic composition with balanced layout ")
               .append("- Rich colors and compelling imagery that represents the book's essence ")
-              .append("- High-quality illustration or artistic design ")
+              .append("- High-quality illustration or graphic design ")
+              .append("- The design should look like a book cover that would be printed on a book ")
+              .append("- Avoid showing actual books, book spines, or 3D book objects ")
+              .append("- Focus on the cover artwork and design elements only ")
               .append("- No text or letters should be included in the image itself ");
         
         // 장르별 스타일 가이드
@@ -210,28 +229,28 @@ public class BookService {
             switch (category.toLowerCase()) {
                 case "판타지":
                 case "fantasy":
-                    prompt.append("- Fantasy style with magical elements, mystical atmosphere ");
+                    prompt.append("- Fantasy art style with magical elements, mystical creatures, enchanted landscapes ");
                     break;
                 case "로맨스":
                 case "romance":
-                    prompt.append("- Romantic style with warm colors, elegant composition ");
+                    prompt.append("- Romantic art style with warm colors, elegant composition, emotional atmosphere ");
                     break;
                 case "공포":
                 case "horror":
-                    prompt.append("- Dark, mysterious atmosphere with dramatic lighting ");
+                    prompt.append("- Dark, mysterious artwork with dramatic lighting and gothic elements ");
                     break;
                 case "과학":
                 case "기술":
                 case "science":
-                    prompt.append("- Modern, clean design with technological elements ");
+                    prompt.append("- Modern, sleek design with technological elements and futuristic aesthetics ");
                     break;
                 case "자기계발":
                 case "self-help":
-                    prompt.append("- Inspirational design with uplifting colors and imagery ");
+                    prompt.append("- Inspirational design with uplifting colors, motivational imagery and clean layout ");
                     break;
                 case "에세이":
                 case "essay":
-                    prompt.append("- Artistic, thoughtful design with sophisticated composition ");
+                    prompt.append("- Artistic, thoughtful design with sophisticated composition and literary feel ");
                     break;
                 default:
                     prompt.append("- Style appropriate to the book's genre and mood ");

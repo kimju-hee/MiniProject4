@@ -42,7 +42,6 @@ const BookRegister = () => {
     try {
       console.log('🎨 AI 북커버 생성 시작...');
       
-      // 새로운 API 엔드포인트 사용
       const response = await axios.post('http://localhost:8080/books/preview-cover', {
         title: title.trim(),
         content: content.trim(),
@@ -64,6 +63,8 @@ const BookRegister = () => {
         alert('🔑 OpenAI API 키가 설정되지 않았거나 유효하지 않습니다.\n백엔드 설정을 확인해주세요.');
       } else if (error.response?.status === 429) {
         alert('⏰ API 호출 한도에 도달했습니다. 잠시 후 다시 시도해주세요.');
+      } else if (error.response?.status === 500) {
+        alert('🔧 서버에서 표지 생성 중 오류가 발생했습니다.\nOpenAI API 키 설정을 확인해주세요.');
       } else {
         alert('북커버 생성에 실패했습니다.\n오류: ' + (error.response?.data?.message || error.message));
       }
@@ -72,7 +73,7 @@ const BookRegister = () => {
     }
   };
 
-  // 책 등록 (AI 표지 포함)
+  // 책 등록 (일반)
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
       alert('제목과 내용을 입력해주세요!');
@@ -83,7 +84,6 @@ const BookRegister = () => {
     try {
       console.log('📚 책 등록 시작...');
       
-      // 책 등록 (생성된 표지 URL 포함)
       const response = await axios.post('http://localhost:8080/books', {
         title: title.trim(),
         content: content.trim(),
@@ -105,7 +105,7 @@ const BookRegister = () => {
     }
   };
 
-  // AI 표지 생성과 함께 책 등록
+  // AI 표지 생성과 함께 책 등록 (수정된 로직)
   const handleSubmitWithAICover = async () => {
     if (!title.trim() || !content.trim()) {
       alert('제목과 내용을 입력해주세요!');
@@ -114,44 +114,65 @@ const BookRegister = () => {
 
     setLoading(true);
     try {
-      console.log('🤖 AI 표지 생성과 함께 책 등록 시작...');
-      
-      // 1단계: AI 표지 생성
-      const coverResponse = await axios.post('http://localhost:8080/books/preview-cover', {
-        title: title.trim(),
-        content: content.trim(),
-        bookCategory: category.trim(),
-        bookTag: tags.trim(),
-        userId: defaultUserId
-      });
+      let finalCoverUrl = coverImage;
 
-      const aiCoverUrl = coverResponse.data.coverUrl;
-      console.log('✅ AI 표지 생성 완료:', aiCoverUrl);
+      // 미리보기된 표지가 없는 경우에만 새로 생성
+      if (!coverImage) {
+        console.log('🤖 표지가 없어서 AI 표지 생성 중...');
+        
+        try {
+          const coverResponse = await axios.post('http://localhost:8080/books/preview-cover', {
+            title: title.trim(),
+            content: content.trim(),
+            bookCategory: category.trim(),
+            bookTag: tags.trim(),
+            userId: defaultUserId
+          });
 
-      // 2단계: 생성된 표지와 함께 책 등록
+          finalCoverUrl = coverResponse.data.coverUrl;
+          setCoverImage(finalCoverUrl); // 생성된 표지를 상태에도 저장
+          console.log('✅ AI 표지 생성 완료:', finalCoverUrl);
+        } catch (coverError) {
+          console.error('AI 표지 생성 실패:', coverError);
+          
+          // 표지 생성 실패 시 사용자에게 선택권 제공
+          const continueWithoutCover = window.confirm(
+            '⚠️ AI 표지 생성에 실패했습니다.\n표지 없이 책을 등록하시겠습니까?'
+          );
+          
+          if (!continueWithoutCover) {
+            return; // 등록 취소
+          }
+          
+          finalCoverUrl = ''; // 빈 표지로 진행
+        }
+      } else {
+        console.log('✅ 기존 미리보기 표지 사용:', finalCoverUrl);
+      }
+
+      // 책 등록
+      console.log('📚 책 등록 중...');
       const bookResponse = await axios.post('http://localhost:8080/books', {
         title: title.trim(),
         content: content.trim(),
-        coverUrl: aiCoverUrl,
+        coverUrl: finalCoverUrl,
         userId: defaultUserId,
         bookCategory: category.trim(),
         bookTag: tags.trim()
       });
 
       console.log('✅ 책 등록 완료:', bookResponse.data);
-      alert(`🎉 AI 표지와 함께 책이 성공적으로 등록되었습니다!\n제목: ${bookResponse.data.title}`);
+      
+      const successMessage = finalCoverUrl 
+        ? `🎉 AI 표지와 함께 책이 성공적으로 등록되었습니다!\n제목: ${bookResponse.data.title}`
+        : `📚 책이 성공적으로 등록되었습니다!\n제목: ${bookResponse.data.title}`;
+      
+      alert(successMessage);
       navigate('/');
       
     } catch (error) {
-      console.error('AI 표지 생성 및 책 등록 실패:', error);
-      
-      if (error.response?.status === 400 || error.response?.status === 401) {
-        alert('🔑 OpenAI API 키가 설정되지 않았거나 유효하지 않습니다.\n일반 등록을 시도하거나 백엔드 설정을 확인해주세요.');
-      } else if (error.response?.status === 429) {
-        alert('⏰ API 호출 한도에 도달했습니다.\n일반 등록을 시도하거나 잠시 후 다시 시도해주세요.');
-      } else {
-        alert('AI 표지 생성 및 책 등록에 실패했습니다.\n오류: ' + (error.response?.data?.message || error.message));
-      }
+      console.error('책 등록 실패:', error);
+      alert('책 등록에 실패했습니다.\n오류: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
@@ -237,15 +258,19 @@ const BookRegister = () => {
         {/* 하단 버튼들 */}
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <button 
-              onClick={handleSubmitWithAICover} 
-              disabled={loading || generating || !title.trim() || !content.trim() || !coverImage}
-              style={{
-                ...buttonStyle,
-                backgroundColor: (loading || generating || !title.trim() || !content.trim() || !coverImage) 
-                  ? '#ccc' : '#20c997',
-                flex: 1,
-                minWidth: '180px'
-              }}>{loading ? '🎨 AI 등록 중...' : '🎨 AI 표지와 함께 등록'}
+            onClick={handleSubmitWithAICover} 
+            disabled={loading || generating || !title.trim() || !content.trim()}
+            style={{
+              ...buttonStyle,
+              backgroundColor: (loading || generating || !title.trim() || !content.trim()) 
+                ? '#ccc' : '#20c997',
+              flex: 1,
+              minWidth: '180px'
+            }}
+          >
+            {loading ? 
+              (coverImage ? '📚 미리보기 표지로 등록 중...' : '🎨 AI 표지 생성 및 등록 중...') : 
+              '🎨 AI 표지와 함께 등록'}
           </button>
           
           <button 
@@ -288,16 +313,33 @@ const BookRegister = () => {
         
         <div style={{ marginBottom: '2rem' }}>
           {coverImage ? (
-            <img 
-              src={coverImage} 
-              alt="AI generated book cover" 
-              style={{ 
-                width: '218px', 
-                height: '308px',
-                objectFit: 'cover',
-                borderRadius: '8px',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
-              }}/>
+            <div style={{ position: 'relative' }}>
+              <img 
+                src={coverImage} 
+                alt="AI generated book cover" 
+                style={{ 
+                  width: '218px', 
+                  height: '308px',
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
+                }}
+              />
+              {/* 표지 상태 표시 */}
+              <div style={{
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                backgroundColor: 'rgba(40, 201, 151, 0.9)',
+                color: 'white',
+                padding: '4px 8px',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: 'bold'
+              }}>
+                ✓ 생성완료
+              </div>
+            </div>
           ) : (
             <div
               style={{
@@ -379,6 +421,7 @@ const BookRegister = () => {
           • <strong>태그:</strong> 주요 키워드나 테마 입력<br/>
           • <strong>내용:</strong> 줄거리와 분위기를 자세히 작성<br/>
           • 내용이 구체적일수록 더 정확한 표지 생성<br/>
+          • 미리보기 후 "AI 표지와 함께 등록"하면 같은 표지 사용<br/>
           • 생성에는 10-30초 정도 소요됩니다
         </div>
 
@@ -391,7 +434,24 @@ const BookRegister = () => {
             fontStyle: 'italic'
           }}>
             {generating ? '🎨 AI가 북커버를 생성하고 있습니다...' : 
-             loading ? '💾 책을 등록하고 있습니다...' : ''}
+             loading ? (coverImage ? '💾 미리보기 표지로 책을 등록하고 있습니다...' : '💾 AI 표지를 생성하며 책을 등록하고 있습니다...') : ''}
+          </div>
+        )}
+
+        {/* 표지 미리보기 완료 안내 */}
+        {coverImage && !loading && !generating && (
+          <div style={{ 
+            marginTop: '1rem',
+            padding: '0.75rem',
+            backgroundColor: '#d4edda',
+            border: '1px solid #c3e6cb',
+            borderRadius: '6px',
+            fontSize: '13px',
+            color: '#155724'
+          }}>
+            ✅ <strong>표지 미리보기 완료!</strong><br/>
+            이제 "AI 표지와 함께 등록" 버튼을 누르면<br/>
+            이 표지로 바로 등록됩니다.
           </div>
         )}
       </div>

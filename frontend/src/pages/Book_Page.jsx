@@ -60,7 +60,7 @@ const Book_Page = () => {
 
     try {
       const response = await axios.post(`http://localhost:8080/books/${id}/generate`);
-      setBook(prev => ({ ...prev, coverUrl: response.data }));
+      setBook(prev => ({ ...prev, coverUrl: response.data.coverUrl }));
       alert('새로운 표지가 생성되었습니다!');
     } catch (error) {
       console.error('표지 생성 실패:', error);
@@ -124,11 +124,12 @@ const Book_Page = () => {
               src={book.coverUrl} 
               alt="cover" 
               style={{ 
-                width: '270px', 
-                maxHeight: '386px', 
-                objectFit: 'cover',
+                width: '270px',
+                height: '360px', // 책 표지 비율 (3:4)로 고정
+                objectFit: 'cover', // 좌우를 자르면서 비율에 맞춤
                 borderRadius: '8px',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
+                boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+                border: '1px solid #ddd'
               }} 
             />
           ) : (
@@ -136,7 +137,7 @@ const Book_Page = () => {
               background: 'linear-gradient(135deg,rgb(199, 101, 255) 0%, #764ba2 100%)',
               color: 'white',
               width: '270px', 
-              height: '386px',
+              height: '380px', // 책 표지 비율에 맞게 조정
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
