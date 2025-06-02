@@ -12,9 +12,11 @@ const Book_Edit = () => {
   const [tags, setTags] = useState('');
   const [content, setContent] = useState('');
   const [coverImage, setCoverImage] = useState('');
+  const [originalCoverImage, setOriginalCoverImage] = useState(''); // 원본 표지 저장
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [coverChanged, setCoverChanged] = useState(false); // 표지 변경 여부 추적
 
   // 책 정보 로딩
   useEffect(() => {
@@ -29,6 +31,8 @@ const Book_Edit = () => {
         setTags(book.bookTag || '');
         setContent(book.content || '');
         setCoverImage(book.coverUrl || '');
+        setOriginalCoverImage(book.coverUrl || ''); // 원본 표지 저장
+        setCoverChanged(false);
       } catch (error) {
         console.error('책 정보를 가져오는데 실패했습니다:', error);
         alert('책 정보를 찾을 수 없습니다.');
@@ -41,37 +45,40 @@ const Book_Edit = () => {
     fetchBook();
   }, [id, navigate]);
 
-  // AI 북커버 생성 (수정된 로직)
+  // AI 북커버 생성 (미리보기 방식으로 변경)
   const handleGenerateCover = async () => {
     if (!title.trim()) {
       alert('제목을 먼저 입력해주세요.');
       return;
     }
 
-    if (!window.confirm('새로운 AI 표지를 생성하시겠습니까?')) {
+    if (!window.confirm('새로운 AI 표지를 생성하시겠습니까?\n(미리보기로 생성되며, "수정 완료"를 눌러야 실제로 저장됩니다)')) {
       return;
     }
 
     try {
       setGenerating(true);
-      console.log('🎨 AI 북커버 재생성 시작...');
+      console.log('🎨 AI 북커버 미리보기 생성 시작...');
       
-      // 백엔드 API 호출
-      const response = await axios.post(`http://localhost:8080/books/${id}/generate`);
+      // 미리보기 API 사용 (실제 저장하지 않음)
+      const response = await axios.post('http://localhost:8080/books/preview-cover', {
+        title: title.trim(),
+        content: content.trim(),
+        bookCategory: category.trim(),
+        bookTag: tags.trim(),
+        userId: 1 // 임시 사용자 ID
+      });
       
-      // 응답 구조 확인
-      console.log('📡 API 응답:', response.data);
-      
-      // coverUrl 추출 (Map<String, String> 응답 처리)
-      const newCoverUrl = response.data.coverUrl || response.data;
+      const newCoverUrl = response.data.coverUrl;
       
       if (!newCoverUrl || newCoverUrl.includes('error')) {
         throw new Error(response.data.message || '표지 생성에 실패했습니다.');
       }
       
       setCoverImage(newCoverUrl);
-      console.log('✅ 새로운 표지 URL:', newCoverUrl);
-      alert('🎨 새로운 AI 표지가 생성되었습니다!');
+      setCoverChanged(true); // 표지가 변경되었음을 표시
+      console.log('✅ 새로운 표지 미리보기 생성:', newCoverUrl);
+      alert('🎨 새로운 AI 표지 미리보기가 생성되었습니다!\n"수정 완료"를 눌러야 실제로 저장됩니다.');
       
     } catch (error) {
       console.error('❌ 표지 생성 실패:', error);
@@ -91,6 +98,16 @@ const Book_Edit = () => {
     }
   };
 
+  // 표지 제거 (미리보기)
+  const handleRemoveCover = () => {
+    if (!window.confirm('표지를 제거하시겠습니까?\n(미리보기로 제거되며, "수정 완료"를 눌러야 실제로 저장됩니다)')) {
+      return;
+    }
+    
+    setCoverImage('');
+    setCoverChanged(true);
+  };
+
   // 책 정보 수정
   const handleUpdate = async () => {
     if (!title.trim() || !content.trim()) {
@@ -98,7 +115,11 @@ const Book_Edit = () => {
       return;
     }
 
-    if (!window.confirm('책 정보를 수정하시겠습니까?')) {
+    const confirmMessage = coverChanged 
+      ? '책 정보와 표지를 수정하시겠습니까?' 
+      : '책 정보를 수정하시겠습니까?';
+    
+    if (!window.confirm(confirmMessage)) {
       return;
     }
 
@@ -118,7 +139,12 @@ const Book_Edit = () => {
       await axios.put(`http://localhost:8080/books/${id}`, updateData);
 
       console.log('✅ 책 정보 수정 완료');
-      alert('📝 책 정보가 성공적으로 수정되었습니다!');
+      
+      const successMessage = coverChanged 
+        ? '📝 책 정보와 표지가 성공적으로 수정되었습니다!' 
+        : '📝 책 정보가 성공적으로 수정되었습니다!';
+      
+      alert(successMessage);
       navigate(`/books/${id}`); // 상세 페이지로 이동
       
     } catch (error) {
@@ -128,6 +154,57 @@ const Book_Edit = () => {
       setSaving(false);
     }
   };
+
+  // 취소 처리 (원본 상태로 복구)
+  const handleCancel = () => {
+    const hasChanges = 
+      title !== (originalData?.title || '') ||
+      category !== (originalData?.bookCategory || '') ||
+      tags !== (originalData?.bookTag || '') ||
+      content !== (originalData?.content || '') ||
+      coverChanged;
+    
+    if (hasChanges) {
+      if (!window.confirm('변경사항이 있습니다. 정말로 취소하시겠습니까?\n모든 변경사항이 사라집니다.')) {
+        return;
+      }
+    }
+    
+    navigate(`/books/${id}`);
+  };
+
+  // 원본 데이터를 저장하기 위한 state 추가
+  const [originalData, setOriginalData] = useState(null);
+
+  // useEffect 수정
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:8080/books/${id}`);
+        const book = response.data;
+        
+        // 원본 데이터 저장
+        setOriginalData(book);
+        
+        setTitle(book.title || '');
+        setCategory(book.bookCategory || '');
+        setTags(book.bookTag || '');
+        setContent(book.content || '');
+        setCoverImage(book.coverUrl || '');
+        setOriginalCoverImage(book.coverUrl || '');
+        setCoverChanged(false);
+      } catch (error) {
+        console.error('책 정보를 가져오는데 실패했습니다:', error);
+        alert('책 정보를 찾을 수 없습니다.');
+        navigate('/');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBook();
+  }, [id, navigate]);
 
   if (loading) {
     return (
@@ -280,7 +357,7 @@ const Book_Edit = () => {
           </button>
           
           <button 
-            onClick={() => navigate(`/books/${id}`)} 
+            onClick={handleCancel} 
             disabled={saving || generating}
             style={{
               ...buttonStyle,
@@ -303,7 +380,9 @@ const Book_Edit = () => {
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
         textAlign: 'center',
       }}>
-        <h3 style={{ marginBottom: '2rem', color: '#333' }}>🎨 북커버</h3>
+        <h3 style={{ marginBottom: '2rem', color: '#333' }}>
+          🎨 북커버 {coverChanged && '(미리보기)'}
+        </h3>
         
         <div style={{ marginBottom: '2rem' }}>
           {coverImage ? (
@@ -319,6 +398,24 @@ const Book_Edit = () => {
                   boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
                 }} 
               />
+              
+              {/* 표지 상태 표시 */}
+              {coverChanged && (
+                <div style={{
+                  position: 'absolute',
+                  top: '8px',
+                  right: '8px',
+                  backgroundColor: 'rgba(255, 193, 7, 0.9)',
+                  color: 'white',
+                  padding: '4px 8px',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  fontWeight: 'bold'
+                }}>
+                  📝 미리보기
+                </div>
+              )}
+              
               {generating && (
                 <div style={{
                   position: 'absolute',
@@ -368,6 +465,11 @@ const Book_Edit = () => {
                 <>
                   <div style={{ fontSize: '2rem' }}>📚</div>
                   <div>표지 없음</div>
+                  {coverChanged && (
+                    <div style={{ fontSize: '12px', color: '#ffc107' }}>
+                      (미리보기로 제거됨)
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -388,12 +490,12 @@ const Book_Edit = () => {
               color: (generating || saving || !title.trim()) ? '#666' : '#ffffff'
             }}
           >
-            {generating ? '🎨 생성 중...' : '🎨 AI 북커버 다시 생성'}
+            {generating ? '🎨 생성 중...' : '🎨 AI 북커버 미리 생성'}
           </button>
           
           {coverImage && !generating && (
             <button 
-              onClick={() => setCoverImage('')}
+              onClick={handleRemoveCover}
               disabled={saving || generating}
               style={{
                 ...buttonStyle,
@@ -409,17 +511,30 @@ const Book_Edit = () => {
         <div style={{ 
           marginTop: '2rem',
           padding: '1rem',
-          backgroundColor: '#e8f4f8',
+          backgroundColor: coverChanged ? '#fff3cd' : '#e8f4f8',
           borderRadius: '6px',
           fontSize: '12px',
           color: '#555',
-          textAlign: 'left'
+          textAlign: 'left',
+          border: coverChanged ? '1px solid #ffeaa7' : 'none'
         }}>
-          <strong>💡 AI 북커버 재생성 팁:</strong><br/>
-          • 제목을 수정한 후 재생성하면 새로운 스타일의 표지 생성<br/>
-          • 카테고리와 태그를 추가/수정하면 더 정확한 표지 생성<br/>
-          • 내용을 더 구체적으로 작성하면 주제에 맞는 표지 생성<br/>
-          • 마음에 들지 않으면 여러 번 재생성 가능<br/>
+          {coverChanged ? (
+            <>
+              <strong>⚠️ 미리보기 모드:</strong><br/>
+              • 현재 표지는 미리보기 상태입니다<br/>
+              • "수정 완료"를 눌러야 실제로 저장됩니다<br/>
+              • "취소"를 누르면 원래 표지로 돌아갑니다<br/>
+            </>
+          ) : (
+            <>
+              <strong>💡 AI 북커버 생성 팁:</strong><br/>
+              • 제목을 수정한 후 재생성하면 새로운 스타일의 표지 생성<br/>
+              • 카테고리와 태그를 추가/수정하면 더 정확한 표지 생성<br/>
+              • 내용을 더 구체적으로 작성하면 주제에 맞는 표지 생성<br/>
+              • 마음에 들지 않으면 여러 번 재생성 가능<br/>
+              • 미리보기로 생성되어 안전합니다<br/>
+            </>
+          )}
           • 생성에는 10-30초 정도 소요됩니다
         </div>
 
@@ -431,7 +546,7 @@ const Book_Edit = () => {
             fontSize: '14px',
             fontStyle: 'italic'
           }}>
-            {generating ? '🎨 AI가 새로운 북커버를 생성하고 있습니다...' : 
+            {generating ? '🎨 AI가 새로운 북커버 미리보기를 생성하고 있습니다...' : 
              saving ? '💾 책 정보를 저장하고 있습니다...' : ''}
           </div>
         )}
